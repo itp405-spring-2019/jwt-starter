@@ -3,12 +3,12 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const Sequelize = require('sequelize');
+const jwt = require('jsonwebtoken');
 const Playlist = require('./models/playlist');
 const Artist = require('./models/artist');
 const Album = require('./models/album');
 const Track = require('./models/track');
-const Sequelize = require('sequelize');
-const jwt = require('jsonwebtoken');
 const protect = require('./middleware/protect');
 
 const { Op } = Sequelize;
