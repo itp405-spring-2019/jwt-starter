@@ -1,14 +1,20 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+const Sequelize = require('sequelize');
+const jwt = require('jsonwebtoken');
 const Playlist = require('./models/playlist');
 const Artist = require('./models/artist');
 const Album = require('./models/album');
 const Track = require('./models/track');
-const Sequelize = require('sequelize');
+const protect = require('./middleware/protect');
 
 const { Op } = Sequelize;
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 Artist.hasMany(Album, {
@@ -30,6 +36,17 @@ Track.belongsToMany(Playlist, {
   foreignKey: 'TrackId',
   timestamps: false
 });
+
+app.post('/login', (request, response) => {
+  if (request.body.email === 'david@hello.com') {
+    let token = jwt.sign({ name: 'David' }, process.env.PRIVATE_KEY);
+    response.json({ token });
+  } else {
+    response.status(401).end();
+  }
+});
+
+app.use('/api', protect);
 
 app.delete('/api/playlists/:id', function(request, response) {
   let { id } = request.params;
